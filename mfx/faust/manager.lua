@@ -136,9 +136,6 @@ function M.load(app, dsp_path, faust_include)
   app:start_dsp()
   app:dump_faust_ui()
   print("getName", app:getName())
-  -- app:init_sdl()
-  -- app:init_imgui()
-  -- require("imgui.sdl").ImPlot_CreateContext()
 end
 
 return M

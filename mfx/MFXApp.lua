@@ -20,6 +20,12 @@ function MFXApp.getName(self)
 end
 
 
+function MFXApp.init_gui(self)
+  self:init_sdl()
+  self:init_imgui()
+  require("imgui.sdl").ImPlot_CreateContext()
+end
+
 function MFXApp.init_sdl(self)
   gllib.set_loader(sdl)
   self.gl, glc, glu, glext = gllib.libraries()
