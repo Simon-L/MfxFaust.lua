@@ -23,19 +23,16 @@ local ig = require"imgui.sdl"
 local flags, params = cli.parse_args(arg)
 
 -- Initialize app
-print("1")
 local faust_app = MFXApp("Faust_1")
-print("2")
 faust_manager.setup_app(faust_app)
-print("3")
 input_handler.bind(faust_app)
-print("4")
 
 
 -- Set DSP path from CLI
 local dsp_path = params[1]
-faust_manager.load(faust_app, dsp_path)
-print("5")
+faust_manager.load(faust_app, dsp_path, flags.I)
+
+faust_app:init_gui()
 
 faust_app.scope_buffer = ffi.new("float[" .. 16 .. "][" .. 48000 .. "]")
 
@@ -60,13 +57,11 @@ faust_app.user_loop = function(self)
     if self.running then
       self:stop_dsp()
       sleep(0.4)
-      print("stopped")
     end
     ui_builder.faust_ui_tbl = {}
     self.total_samples_read = 0
     self:reset_scope()
     self:start_dsp()
-    print("changed!!!")
   end
   
   if self.running then
@@ -77,9 +72,8 @@ faust_app.user_loop = function(self)
     ig.TextWrapped(self.error_msg)
     ig.GetWindowDrawList().AddRect(ig.GetWindowDrawList(), ig.ImVec2(ig.GetItemRectMin().x-2, ig.GetItemRectMin().y-2), ig.ImVec2(ig.GetItemRectMin().x + ig.GetColumnWidth(), ig.GetItemRectMax().y+2), 0xff666666)
   end
-  -- 
   ig.Separator();
-  -- 
+  
   -- ig.SeparatorText("Controller status");
   -- -- Show buttons pressed
   -- self:button("a"); ig.SameLine(); self:button("b"); ig.SameLine(); self:button("x"); ig.SameLine(); self:button("y");
@@ -161,8 +155,5 @@ faust_app.user_loop = function(self)
 end
 
 -- Run main loop
-print("6")
 faust_app:run()
-print("7")
 faust_app:stop_dsp()
-print("8")
