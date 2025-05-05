@@ -59,7 +59,10 @@ end
 
 function M.setup_app(app)
   define_button_helpers(app)
-
+  
+  -- app.MfxFaustLib = ffi.load(os.getenv("QUIRK_DEVICE") and "./libMfxFaust.aarch64-jelos.so" or "./libMfxFaust.x86_64.so")
+  app.MfxFaustLib = ffi.load("libMfxFaust.so")
+  
   function app:dump_faust_ui()
     local json_data = {}
     for _, e in ipairs(ui.faust_ui_tbl) do
@@ -81,9 +84,8 @@ function M.setup_app(app)
     end
   end
 
-  function app:start_dsp()
-    -- self.MfxFaustLib = ffi.load(os.getenv("QUIRK_DEVICE") and "./libMfxFaust.aarch64-jelos.so" or "./libMfxFaust.x86_64.so")
-    self.MfxFaustLib = ffi.load("libMfxFaust.so")
+  function app:start_dsp(dsp_path)
+    if dsp_path ~= nil then self.dsp_path = dsp_path end
     local argc, argv
     if self.faust_include == nil then
       argc = 0
@@ -124,6 +126,17 @@ function M.setup_app(app)
     self.MfxFaustLib.lua_stopDspfaust(self.dsp)
     self.MfxFaustLib.mfx_ringbuffer_free(self.rb)
     self.running = false
+  end
+
+  function app:restart_dsp(dsp_path)
+    if self.running then
+      self:stop_dsp()
+      sleep(0.4)
+    end
+    ui.faust_ui_tbl = {}
+    self.total_samples_read = 0
+    self:reset_scope()
+    self:start_dsp(dsp_path)
   end
 end
 

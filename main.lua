@@ -30,6 +30,12 @@ input_handler.bind(faust_app)
 
 -- Set DSP path from CLI
 local dsp_path = params[1]
+if dsp_path == nil then
+  local dialog_dsp_path = ffi.new("char[2048]")
+  if faust_app.MfxFaustLib.openDspDialog(dialog_dsp_path) then
+    dsp_path = ffi.string(dialog_dsp_path)
+  end
+end
 faust_manager.load(faust_app, dsp_path, flags.I)
 
 faust_app:init_gui()
@@ -54,16 +60,16 @@ faust_app.user_loop = function(self)
   ig.Begin("__", nil, ig.lib.ImGuiWindowFlags_NoTitleBar + ig.lib.ImGuiWindowFlags_NoResize)
   
   if self.fw:has_changed() then
-    if self.running then
-      self:stop_dsp()
-      sleep(0.4)
-    end
-    ui_builder.faust_ui_tbl = {}
-    self.total_samples_read = 0
-    self:reset_scope()
-    self:start_dsp()
+    self:restart_dsp()
   end
   
+  if ig.Button("Open DSP file") then
+    local dialog_dsp_path = ffi.new("char[2048]")
+    if self.MfxFaustLib.openDspDialog(dialog_dsp_path) then
+      self:restart_dsp(ffi.string(dialog_dsp_path))
+    end
+  end
+
   if self.running then
     ig.SeparatorText(ui_builder.faust_ui_tbl[1].label);
     self:add_faust_ui()

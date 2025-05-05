@@ -70,6 +70,7 @@ size_t mfx_ringbuffer_write(mfx_ringbuffer_t *rb, const char *src,
 void mfx_ringbuffer_write_advance(mfx_ringbuffer_t *rb, size_t cnt);
 size_t mfx_ringbuffer_write_space(const mfx_ringbuffer_t *rb);
 void lua_setRingbuffer(lua_DspFaust* dsp, mfx_ringbuffer_t* rb);
+int openDspDialog(char* path);
 ]]
 
 
