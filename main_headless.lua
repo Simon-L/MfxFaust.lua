@@ -29,15 +29,7 @@ print("Press Ctrl+C to exit...")
 while true do
     local fw = faust_app.fw
     if fw:has_changed() then
-        if faust_app.running then
-            faust_app:stop_dsp()
-            sleep(0.4)
-            print("Restarting...")
-        end
-        ui_builder.faust_ui_tbl = {}
-        faust_app.total_samples_read = 0
-        faust_app:reset_scope()
-        faust_app:start_dsp()
+        faust_app:restart_dsp()
     end
     sleep(0.2)
 end

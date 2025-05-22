@@ -50,7 +50,7 @@ local done = false;
 faust_app.total_samples_read = 0
 faust_app.halted = false
 faust_app.scope_trigger = false
-local autohalt = ffi.new("bool[1]",true)
+local autohalt = ffi.new("bool[1]",false)
 local showplot = ffi.new("bool[1]",true)
 local showdemo = ffi.new("bool[1]",false)
 
@@ -161,5 +161,6 @@ faust_app.user_loop = function(self)
 end
 
 -- Run main loop
+faust_app.MfxFaustLib.printVersionAndTarget()
 faust_app:run()
 faust_app:stop_dsp()
