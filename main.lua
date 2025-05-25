@@ -1,10 +1,12 @@
 -- main.lua - Entry point
 
-package.path = "./?.lua;prefix/share/lua/5.1/?.lua;prefix/share/lua/5.1/?/init.lua"
-if jit.os ~= "Windows" then
-  package.cpath = "./?.so;prefix/lib/lua/5.1/?.so;prefix/lib/lua/5.1/loadall.so"
-else
-  package.cpath = "./?.dll;prefix/lib/lua/5.1/?.dll;prefix/lib/lua/5.1/loadall.dll"
+if not os.getenv("LUA_PATH") then
+  package.path = "./?.lua;prefix/share/lua/5.1/?.lua;prefix/share/lua/5.1/?/init.lua"
+  if jit.os ~= "Windows" then
+    package.cpath = "./?.so;prefix/lib/lua/5.1/?.so;prefix/lib/lua/5.1/loadall.so"
+  else
+    package.cpath = "./?.dll;prefix/lib/lua/5.1/?.dll;prefix/lib/lua/5.1/loadall.dll"
+  end
 end
 
 local ffi = require "ffi"
@@ -26,7 +28,6 @@ local flags, params = cli.parse_args(arg)
 local faust_app = MFXApp("Faust_1")
 faust_manager.setup_app(faust_app)
 input_handler.bind(faust_app)
-
 
 -- Set DSP path from CLI
 local dsp_path = params[1]
