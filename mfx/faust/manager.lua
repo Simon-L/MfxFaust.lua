@@ -61,7 +61,8 @@ function M.setup_app(app)
   define_button_helpers(app)
   
   -- app.MfxFaustLib = ffi.load(os.getenv("QUIRK_DEVICE") and "./libMfxFaust.aarch64-jelos.so" or "./libMfxFaust.x86_64.so")
-  app.MfxFaustLib = ffi.load("libMfxFaust.so")
+  if jit.os == "Linux" then app.MfxFaustLib = ffi.load("libMfxFaust.so")
+  elseif jit.os == "Windows" then app.MfxFaustLib = ffi.load("MfxFaust") end
   
   function app:dump_faust_ui()
     local json_data = {}
@@ -142,8 +143,10 @@ end
 
 function M.load(app, dsp_path, faust_include)
   app.error_msg = ffi.new("char[2048]")
-  local fw = require("mfx.lib").FileWatcher(dsp_path)
-  app.fw = fw
+  if jit.os ~= "Windows" then
+    local fw = require("mfx.lib").FileWatcher(dsp_path)
+    app.fw = fw
+  end
   app.faust_include = faust_include
   app:init(dsp_path)
   app:start_dsp()

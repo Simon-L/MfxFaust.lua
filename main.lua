@@ -60,7 +60,7 @@ faust_app.user_loop = function(self)
   ig.SetNextWindowPos(ig.ImVec2(0, 0))
   ig.Begin("__", nil, ig.lib.ImGuiWindowFlags_NoTitleBar + ig.lib.ImGuiWindowFlags_NoResize)
   
-  if self.fw:has_changed() then
+  if jit.os ~= "Windows" and self.fw:has_changed() then
     self:restart_dsp()
   end
   
