@@ -124,8 +124,12 @@ function M.setup_app(app)
 
   function app:stop_dsp()
     -- local MfxFaustLib = ffi.C
-    self.MfxFaustLib.lua_stopDspfaust(self.dsp)
-    self.MfxFaustLib.mfx_ringbuffer_free(self.rb)
+    if self.dsp ~= nil then
+      self.MfxFaustLib.lua_stopDspfaust(self.dsp)
+    end
+    if self.rb ~= nil then
+      self.MfxFaustLib.mfx_ringbuffer_free(self.rb)
+    end
     self.running = false
   end
 
